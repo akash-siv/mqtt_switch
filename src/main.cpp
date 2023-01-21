@@ -18,18 +18,18 @@ IPAddress broker(192,168,0,139); // IP address of your MQTT broker eg. 192.168.1
 const byte LIGHT_PIN = 2;           // Pin to control the light with
 const char *ID = "motor_core";  // Name of our device, must be unique
 const char *MOTOR1 = "home/motor1";  // Topic to subcribe to
-const char *STATE_MOTOT1 = "home/motor1/state";  // Topic to publish the light state to
+const char *STATE_MOTOR1 = "home/motor1/state";  // Topic to publish the light state to
 const char *MOTOR2 = "home/motor2";  // Topic to subcribe to
-const char *STATE_MOTOT2 = "home/motor2/state";  // Topic to publish the light state to
+const char *STATE_MOTOR2 = "home/motor2/state";  // Topic to publish the light state to
 const char *IRR_HOME = "home/irrigation";  // Topic to subcribe to
 const char *STATE_IRR_HOME = "home/irrigation/state";  // Topic to publish the light state to
 const char *IRR_GARDEN = "garden/irrigation";  // Topic to subcribe to
 const char *STATE_IRR_GARDEN = "garden/irrigation/state";  // Topic to publish the light state to
 
 WiFiClient wclient;
-
 PubSubClient client(wclient); // Setup MQTT client
 // -------------------   END MQTT Network
+
 
 // Handle incomming messages from the broker
 void callback(char* topic, byte* payload, unsigned int length) {
@@ -38,24 +38,21 @@ void callback(char* topic, byte* payload, unsigned int length) {
   for (int i = 0; i < length; i++) {
     response += (char)payload[i];
   }
-  Serial.print("Message arrived [");
-  Serial.print(topic);
-  Serial.print("] ");
-  Serial.println(response);
-  // Serial.print(MOTOR1); Serial.println(typeof(MOTOR1))
-  // Serial.print(topic); Serial.println(typeof(topic))
+  // Serial.print("Message arrived [");
+  // Serial.print(topic);
+  // Serial.print("] ");
+  // Serial.println(response);
 
   if (String(topic) == String(MOTOR1)){
-    // Serial.println("yes");
     if(response == "on")  // Turn the Motor1 on
       {
         digitalWrite(LIGHT_PIN, HIGH);
-        client.publish(STATE_MOTOT1,"on");
+        client.publish(STATE_MOTOR1,"on");
       }
     else if(response == "off")  // Turn the light off
     {
       digitalWrite(LIGHT_PIN, LOW);
-      client.publish(STATE_MOTOT1,"off");
+      client.publish(STATE_MOTOR1,"off");
     }
   }
 
@@ -63,15 +60,14 @@ void callback(char* topic, byte* payload, unsigned int length) {
     if(response == "on")  // Turn the Motor1 on
       {
         digitalWrite(LIGHT_PIN, HIGH);
-        client.publish(STATE_MOTOT2,"on");
+        client.publish(STATE_MOTOR2,"on");
       }
     else if(response == "off")  // Turn the light off
     {
       digitalWrite(LIGHT_PIN, LOW);
-      client.publish(STATE_MOTOT2,"off");
+      client.publish(STATE_MOTOR2,"off");
     }
   }
-  
 }
 
 // Connect to WiFi network
@@ -104,11 +100,8 @@ void reconnect() {
       client.subscribe(IRR_HOME);
       client.subscribe(IRR_GARDEN);
       Serial.println("connected");
-      // Serial.print("Subcribed to: \n");
-      // Serial.println(TOPIC);
-      // Serial.println('\n');
-
-    } else {
+    }
+    else {
       Serial.println(" try again in 5 seconds");
       // Wait 5 seconds before retrying
       delay(5000);
@@ -133,10 +126,10 @@ void loop() {
   client.loop();
 
   digitalWrite(LIGHT_PIN, HIGH);  // turn the LED on (HIGH is the voltage level)
-  client.publish(STATE_MOTOT1,"on");
+  client.publish(STATE_MOTOR1,"on");
   delay(1000);                      // wait for a second
   digitalWrite(LIGHT_PIN, LOW);   // turn the LED off by making the voltage LOW
-  client.publish(STATE_MOTOT1,"off");
+  client.publish(STATE_MOTOR1,"off");
   delay(1000);                      // wait for a second
 
 }
