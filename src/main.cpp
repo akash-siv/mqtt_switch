@@ -16,15 +16,15 @@ const char *HA_PASS = "*^7KNF!7fsSnPq";
 // -------------------   MQTT Network
 IPAddress broker(192,168,0,139); // IP address of your MQTT broker eg. 192.168.1.50
 const byte LIGHT_PIN = 2;           // Pin to control the light with
-const char *ID = "motor_core";  // Name of our device, must be unique
-const char *MOTOR1 = "home/motor1";  // Topic to subcribe to
-const char *STATE_MOTOR1 = "home/motor1/state";  // Topic to publish the light state to
-const char *MOTOR2 = "home/motor2";  // Topic to subcribe to
-const char *STATE_MOTOR2 = "home/motor2/state";  // Topic to publish the light state to
-const char *IRR_HOME = "home/irrigation";  // Topic to subcribe to
-const char *STATE_IRR_HOME = "home/irrigation/state";  // Topic to publish the light state to
-const char *IRR_GARDEN = "garden/irrigation";  // Topic to subcribe to
-const char *STATE_IRR_GARDEN = "garden/irrigation/state";  // Topic to publish the light state to
+const char *ID = "Gesture";  // Name of our device, must be unique
+const char *CLASS1 = "Gesture/class1";  // Topic to subcribe to
+const char *STATE_CLASS1 = "Gesture/class1/state";  // Topic to publish the light state to
+const char *CLASS2 = "Gesture/class2";  // Topic to subcribe to
+const char *STATE_CLASS2 = "Gesture/class1/state";  // Topic to publish the light state to
+const char *CLASS3 = "Gesture/class3";  // Topic to subcribe to
+const char *STATE_CLASS3 = "Gesture/class3/state";  // Topic to publish the light state to
+const char *CLASS4 = "Gesture/class4";  // Topic to subcribe to
+const char *STATE_CLASS4 = "Gesture/class4/state";  // Topic to publish the light state to
 
 WiFiClient wclient;
 PubSubClient client(wclient); // Setup MQTT client
@@ -43,29 +43,29 @@ void callback(char* topic, byte* payload, unsigned int length) {
   // Serial.print("] ");
   // Serial.println(response);
 
-  if (String(topic) == String(MOTOR1)){
+  if (String(topic) == String(CLASS1)){
     if(response == "on")  // Turn the Motor1 on
       {
         digitalWrite(LIGHT_PIN, HIGH);
-        client.publish(STATE_MOTOR1,"on");
+        client.publish(STATE_CLASS1,"on");
       }
     else if(response == "off")  // Turn the light off
     {
       digitalWrite(LIGHT_PIN, LOW);
-      client.publish(STATE_MOTOR1,"off");
+      client.publish(STATE_CLASS1,"off");
     }
   }
 
-  if (String(topic) == String(MOTOR2)){
+  if (String(topic) == String(CLASS2)){
     if(response == "on")  // Turn the Motor1 on
       {
         digitalWrite(LIGHT_PIN, HIGH);
-        client.publish(STATE_MOTOR2,"on");
+        client.publish(STATE_CLASS2,"on");
       }
     else if(response == "off")  // Turn the light off
     {
       digitalWrite(LIGHT_PIN, LOW);
-      client.publish(STATE_MOTOR2,"off");
+      client.publish(STATE_CLASS2,"off");
     }
   }
 }
@@ -95,10 +95,10 @@ void reconnect() {
     Serial.print("Attempting MQTT connection...");
     // Attempt to connect
     if(client.connect(ID,HA_USER,HA_PASS)) {
-      client.subscribe(MOTOR1);
-      client.subscribe(MOTOR2);
-      client.subscribe(IRR_HOME);
-      client.subscribe(IRR_GARDEN);
+      client.subscribe(CLASS1);
+      client.subscribe(CLASS2);
+      client.subscribe(CLASS3);
+      client.subscribe(CLASS4);
       Serial.println("connected");
     }
     else {
@@ -124,12 +124,5 @@ void loop() {
     reconnect();
   }
   client.loop();
-
-  digitalWrite(LIGHT_PIN, HIGH);  // turn the LED on (HIGH is the voltage level)
-  client.publish(STATE_MOTOR1,"on");
-  delay(1000);                      // wait for a second
-  digitalWrite(LIGHT_PIN, LOW);   // turn the LED off by making the voltage LOW
-  client.publish(STATE_MOTOR1,"off");
-  delay(1000);                      // wait for a second
 
 }
